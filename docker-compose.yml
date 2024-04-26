@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  api-age-group:
+    build:
+      context: ./api-age-group
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api-age-group/app:/app
+    command: sh -c "uvicorn main:app --host 0.0.0.0"
+  api-enrollment:
+    build:
+      context: ./api-enrollment
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./api-enrollment/app:/app
+    command: sh -c "uvicorn main:app --host 0.0.0.0"
