@@ -1,28 +1,26 @@
-from fastapi import APIRouter, HTTPException, status, Response
+from fastapi import APIRouter, status, HTTPException, Response
 from typing import List
-from app.models.age_group import AgeGroup
+from app.config.db import ageCollection
+from app.models.age_group import AgeGroup, AgeGroupOut
+from app.schemas.age_group import convert_age_groups
+from bson import ObjectId
 
 router = APIRouter(prefix="/age-groups", tags=["Age Groups"])
 
-# Dados mockados para simular o armazenamento de grupos etários
-age_groups = [AgeGroup(id=1, min_age=1, max_age=5), AgeGroup(id=2, min_age=20, max_age=30)]
-
-
-@router.post("/", response_model=AgeGroup, status_code=status.HTTP_201_CREATED, description="Create a new age group")
-def add_age_group(age_group: AgeGroup):
-    if any(group.id == age_group.id for group in age_groups):
-        raise HTTPException(status_code=400, detail="Age group with this ID already exists")
-    age_groups.append(age_group)
-    return age_group
-
-
-@router.delete("/{group_id}", status_code=status.HTTP_204_NO_CONTENT, description="Delete an age group")
-def delete_age_group(group_id: int):
-    global age_groups
-    age_groups = [group for group in age_groups if group.id != group_id]
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
-@router.get("/", response_model=List[AgeGroup], description="Get all age groups")
+@router.get("/", response_model=List[AgeGroupOut], description="Get all age groups")
 def get_age_groups():
-    return age_groups
+    age_groups = ageCollection.find()
+    converted_age_groups = convert_age_groups(age_groups)
+    return converted_age_groups
+
+@router.post("/", status_code=status.HTTP_201_CREATED, description="Create a new age group")
+def add_age_group(age_group: AgeGroup):
+    ageCollection.insert_one(dict(age_group))
+    return Response(status_code=status.HTTP_201_CREATED)
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, description="Delete an age group")
+def delete_age_group(id: str):
+    result = ageCollection.find_one_and_delete({"_id": ObjectId(id)})
+    if result is None:
+        raise HTTPException(status_code=404, detail="Age group not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

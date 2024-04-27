@@ -1,23 +1,23 @@
-from fastapi import APIRouter, HTTPException, status
-from app.models.enrollment import Enrollment
-from app.services.enrollemnt_service import enroll_student, check_enrollment
+from fastapi import APIRouter, HTTPException, status, Response
+from app.models.enrollment import Enrollment, EnrollmentOut
+from app.schemas.enrollment import convert_enrollment
+from app.services.enrollemnt_service import enroll_student
+from app.config.db import enrollmentCollection
 
-router = APIRouter(prefix='/enrollments', tags=['Enrollments'])
+router = APIRouter(prefix="/enrollments", tags=["Enrollments"])
 
-@router.post("/", response_model=Enrollment, status_code=status.HTTP_201_CREATED, description="Enroll a new student")
+@router.post("/", status_code=status.HTTP_201_CREATED, description="Enroll a new student")
 def request_enrollment(enrollment: Enrollment):
     try:
-        return enroll_student(enrollment)
+        enroll_student(enrollment)
+        return Response(status_code=status.HTTP_201_CREATED)
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        ) from e
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
-
-@router.get("/{cpf}", response_model=Enrollment, description="Get enrollment status")
+@router.get("/{cpf}", response_model=EnrollmentOut, description="Get enrollment status")
 def get_enrollment_status(cpf: str):
-    enrollment = check_enrollment(cpf)
+    enrollment = enrollmentCollection.find_one({"cpf": cpf})
     if enrollment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Enrollment not found")
-    return enrollment
+    converted_enrollment = convert_enrollment(enrollment)
+    return converted_enrollment
