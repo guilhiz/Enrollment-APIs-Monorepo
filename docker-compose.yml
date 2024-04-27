@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     volumes:
       - ./api-age-group/app:/app
-    command: sh -c "uvicorn main:app --host 0.0.0.0"
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
   api-enrollment:
     build:
       context: ./api-enrollment
@@ -15,4 +15,4 @@ services:
       - "8001:8000"
     volumes:
       - ./api-enrollment/app:/app
-    command: sh -c "uvicorn main:app --host 0.0.0.0"
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
