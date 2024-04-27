@@ -8,6 +8,8 @@ services:
     volumes:
       - ./api-age-group/app:/app
     command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
+    depends_on:
+      - mongodb
   api-enrollment:
     build:
       context: ./api-enrollment
@@ -16,3 +18,13 @@ services:
     volumes:
       - ./api-enrollment/app:/app
     command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
