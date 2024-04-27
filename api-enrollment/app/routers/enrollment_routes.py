@@ -9,11 +9,15 @@ def request_enrollment(enrollment: Enrollment):
     try:
         return enroll_student(enrollment)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        ) from e
+
 
 @router.get("/{cpf}", response_model=Enrollment, description="Get enrollment status")
 def get_enrollment_status(cpf: str):
     enrollment = check_enrollment(cpf)
     if enrollment is None:
-        raise HTTPException(status_code=404, detail="Enrollment not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Enrollment not found")
     return enrollment
