@@ -20,6 +20,14 @@ services:
     command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
     depends_on:
       - mongodb
+      - rabbitmq
+  processor:
+    build:
+      context: ./processor
+    command: sh -c "python main.py"
+    depends_on:
+      - mongodb
+      - rabbitmq
   mongodb:
     image: mongo:latest
     restart: always
@@ -28,3 +36,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - "27017:27017"
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - "./data/rabbitmq:/var/lib/rabbitmq"
