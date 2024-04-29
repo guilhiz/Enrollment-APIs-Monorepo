@@ -1,48 +1,37 @@
-import pika
+from src.config.rabbitmq import RabbitmqConsumer
+from src.config.db import ageCollection, enrollmentCollection
+import json
+import time
 
-class RabbitmqConsumer:
-  def __init__(self, callback) -> None:
-    self.__host = "rabbitmq"  # Alterado de "localhost" para "rabbitmq"
-    self.__port = 5672
-    self.__username = "guest"
-    self.__password = "guest"
-    self.__queue = "enrollment_queue"
-    self.__callback = callback
-    self.__channel = self.__create_channel()
-
-  def __create_channel(self):
-    connection_parameters = pika.ConnectionParameters(
-      host=self.__host,
-      port=self.__port,
-      credentials=pika.PlainCredentials(
-        username=self.__username,
-        password=self.__password
-      )
-    )
-
-    channel = pika.BlockingConnection(
-      connection_parameters
-    ).channel()
-    channel.queue_declare(queue=self.__queue, durable=True)
-
-    channel.basic_consume(
-      queue=self.__queue,
-      on_message_callback=self.__callback,
-      auto_ack=True
-    )
-
-    print("Waiting for messages...")
-
-    channel.start_consuming()
-    return channel
-
-  def start(self):
-    print(f"Listen RabbitMQ queue: {self.__queue}")
-    self.__channel.start_consuming()
 
 def callback(channel, method, properties, body):
-  message = body.decode("utf-8")
-  print(message)
+    message = body.decode("utf-8")
+    print(f"Received message: {message}")
+    time.sleep(3)
+    enrollment = json.loads(body)
+    enroll_student(enrollment)
+
+
+def enroll_student(enrollment):
+    existing_student = enrollmentCollection.find_one({"cpf": enrollment["cpf"]})
+    if existing_student:
+        update_enrollment_with_error(enrollment, "A student with this CPF already exists.")
+        return
+
+    age_groups = list(ageCollection.find())
+    if not any(group["min_age"] <= enrollment["age"] <= group["max_age"] for group in age_groups):
+        update_enrollment_with_error(enrollment, "No age group fits the provided age.")
+        return
+
+    enrollment["enrollment_status"] = "active"
+    enrollmentCollection.insert_one(enrollment)
+
+
+def update_enrollment_with_error(enrollment, error_message):
+    enrollment["enrollment_status"] = "failed"
+    enrollment["error_message"] = error_message
+    enrollmentCollection.insert_one(enrollment)
+
 
 rabbitmq_consumer = RabbitmqConsumer(callback)
 rabbitmq_consumer.start()
