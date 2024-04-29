@@ -19,6 +19,8 @@ def test_add_new_age_group_fails_due_to_missing_parameters():
     assert missing_params_response.status_code == 422
 
 def test_delete_existing_age_group_successfully():
+    #cria faixa etaria
+    #busco faixa etaria
     delete_response = client.delete("/age-groups/662d676dfae3b87935a62140")
     assert delete_response.status_code == 204
 

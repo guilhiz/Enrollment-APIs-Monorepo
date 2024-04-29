@@ -5,6 +5,7 @@ def convert_enrollment(enrollment):
         "cpf": enrollment["cpf"],
         "age": enrollment["age"],
         "enrollment_status": enrollment["enrollment_status"],
+        "error_message": enrollment.get("error_message"),
     }
 
 
