@@ -25,8 +25,7 @@ def get_enrollment_status(cpf: str):
 def request_enrollment(enrollment: Enrollment):
     try:
         rabbitmq_publisher = RabbitmqPublisher()
-        message = dict(enrollment)
-        rabbitmq_publisher.send_message(message)
+        rabbitmq_publisher.send_message(dict(enrollment))
 
         existing_enrollment = db_manager.read_item({"cpf": enrollment.cpf})
         if existing_enrollment:

@@ -28,6 +28,7 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
+      - api-enrollment
   mongodb:
     image: mongo:latest
     restart: always

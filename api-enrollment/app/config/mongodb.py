@@ -1,6 +1,5 @@
 from typing import Dict
 
-from bson import ObjectId
 from pymongo import MongoClient
 
 from app.schemas.enrollment import convert_enrollment, convert_enrollments
@@ -27,21 +26,6 @@ class DBManager:
             return None
         return convert_enrollment(item)
 
-    def list_items(self, collection_name="enrollments"):
-        collection = self._get_collection(collection_name)
-        items = collection.find()
-        return convert_enrollments(items)
-
-    def add_item(self, item: Dict, collection_name="enrollments"):
-        collection = self._get_collection(collection_name)
-        result = collection.insert_one(item)
-        return self.read_item(result.inserted_id, collection_name)
-
-    def delete_item(self, item_id: str, collection_name="enrollments"):
-        collection = self._get_collection(collection_name)
-        result = collection.find_one_and_delete({"_id": ObjectId(item_id)})
-        return result
-
     def count_items(self, collection_name="enrollments"):
         collection = self._get_collection(collection_name)
         return collection.count_documents({})
@@ -54,7 +38,6 @@ class DBManager:
                     {"name": "Jane Doe", "cpf": "12345678902", "age": 19, "enrollment_status": "active"},
                     {"name": "Joe Doe", "cpf": "12345678903", "age": 29, "enrollment_status": "active"},
                     {"name": "Jill Doe", "cpf": "12345678904", "age": 39, "enrollment_status": "active"}
-
                 ]
             )
 
