@@ -16,30 +16,37 @@ class DBManager:
         )
         self.__client = MongoClient(self.__connection_string)
         self.__db = self.__client["enrollmentDB"]
-        self.__age_collection = self.__db["age_groups"]
 
-    def read_item(self, item_id):
-        age_group = self.__age_collection.find_one({"_id": item_id})
-        return convert_age_group(age_group)
+    def _get_collection(self, collection_name):
+        return self.__db[collection_name]
 
-    def list_items(self):
-        age_groups = self.__age_collection.find()
-        return convert_age_groups(age_groups)
+    def read_item(self, item_id, collection_name="age_groups"):
+        collection = self._get_collection(collection_name)
+        item = collection.find_one({"_id": item_id})
+        return convert_age_group(item)
 
-    def add_item(self, item: Dict):
-        result = self.__age_collection.insert_one(item)
-        return self.read_item(result.inserted_id)
+    def list_items(self, collection_name="age_groups"):
+        collection = self._get_collection(collection_name)
+        items = collection.find()
+        return convert_age_groups(items)
 
-    def delete_item(self, item_id: str):
-        result = self.__age_collection.find_one_and_delete({"_id": ObjectId(item_id)})
+    def add_item(self, item: Dict, collection_name="age_groups"):
+        collection = self._get_collection(collection_name)
+        result = collection.insert_one(item)
+        return self.read_item(result.inserted_id, collection_name)
+
+    def delete_item(self, item_id: str, collection_name="age_groups"):
+        collection = self._get_collection(collection_name)
+        result = collection.find_one_and_delete({"_id": ObjectId(item_id)})
         return result
 
-    def count_items(self):
-        return self.__age_collection.count_documents({})
+    def count_items(self, collection_name="age_groups"):
+        collection = self._get_collection(collection_name)
+        return collection.count_documents({})
 
-    def populate_db(self):
-        if self.count_items() == 0:
-            self.__age_collection.insert_many(
+    def populate_db(self, collection_name="age_groups"):
+        if self.count_items(collection_name) == 0:
+            self._get_collection(collection_name).insert_many(
                 [
                     {"min_age": 1, "max_age": 10},
                     {"min_age": 11, "max_age": 20},
