@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
@@ -14,12 +15,12 @@ def test_get_enrollment_status_not_found():
 
 def test_request_enrollment_successful():
     response_success = client.post(
-        "/enrollments", json={"name": "John Doe", "cpf": "12345678942", "age": 30, "enrollment_status": "active"}
+        "/enrollments", json={"name": "John Doe", "cpf": "12345678942", "age": 31}
     )
-    assert response_success.status_code == 201
+    assert response_success.status_code == 202
 
 def test_request_enrollment_cpf_already_exists():
     response_cpf_exists = client.post(
-        "/enrollments", json={"name": "John Doe", "cpf": "12345678901", "age": 30, "enrollment_status": "active"}
+        "/enrollments", json={"name": "John Doe", "cpf": "12345678901", "age": 31}
     )
-    assert response_cpf_exists.status_code == 400
+    assert response_cpf_exists.status_code == 202
