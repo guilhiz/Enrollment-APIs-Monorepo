@@ -100,6 +100,9 @@ To execute tests, use the following commands. These commands run tests specifica
   docker-compose run api-age-group sh -c "pytest"
   ```
 
+### Additional Information
+- **Basic Authentication:** The Age Group API is protected by Basic Authentication. To access and test this API, use the username: `admin` and password: `secret`.
+- **Environment Variables:** To facilitate testing and setup, the `.env` file has been intentionally uploaded to the repository. This file contains essential configurations, eliminating the need for initial environment setup by users.
 
 
 ## Project Functionality
