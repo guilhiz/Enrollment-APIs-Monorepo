@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+
 from app.models.age_group import AgeGroup
 
 
@@ -18,7 +19,7 @@ def test_age_group_invalid_min_age():
 
 def test_age_group_invalid_max_age():
     with pytest.raises(ValidationError):
-        AgeGroup( min_age=10, max_age=121)
+        AgeGroup(min_age=10, max_age=121)
 
     with pytest.raises(ValidationError):
         AgeGroup(min_age=10, max_age=1)
