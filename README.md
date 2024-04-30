@@ -105,6 +105,25 @@ To execute tests, use the following commands. These commands run tests specifica
 ### Additional Information
 - **Basic Authentication:** The Age Group API is protected by Basic Authentication. To access and test this API, use the username: `admin` and password: `secret`.
 - **Environment Variables:** To facilitate testing and setup, the `.env` file has been intentionally uploaded to the repository. This file contains essential configurations, eliminating the need for initial environment setup by users.
+- **Database Seeding**: To simplify initial testing and usage, the database is pre-populated with the following sample data:
+  - **Enrollment Records**:
+    ```json
+    [
+        {"name": "John Doe", "cpf": "12345678901", "age": 9, "enrollment_status": "active"},
+        {"name": "Jane Doe", "cpf": "12345678902", "age": 19, "enrollment_status": "active"},
+        {"name": "Joe Doe", "cpf": "12345678903", "age": 29, "enrollment_status": "active"},
+        {"name": "Jill Doe", "cpf": "12345678904", "age": 39, "enrollment_status": "active"}
+    ]
+    ```
+  - **Age Group Definitions**:
+    ```json
+    [
+        {"min_age": 1, "max_age": 10},
+        {"min_age": 11, "max_age": 20},
+        {"min_age": 21, "max_age": 30},
+        {"min_age": 31, "max_age": 40}
+    ]
+    ```
 
 
 ## Project Functionality
