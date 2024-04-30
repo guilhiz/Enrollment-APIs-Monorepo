@@ -30,9 +30,9 @@ def request_enrollment(enrollment: Enrollment):
 
         existing_enrollment = db_manager.read_item({"cpf": enrollment.cpf})
         if existing_enrollment:
-            message_suffix = "re-processed to verify eligibility."
+            message_suffix = "being reprocessed to verify eligibility."
         else:
-            message_suffix = "accepted. Your application is being processed."
+            message_suffix = "accepted. Your application is currently being processed."
 
         return f"Enrollment request {message_suffix}"
 
