@@ -10,6 +10,8 @@ services:
     command: sh -c "uvicorn main:app --host 0.0.0.0 --reload"
     depends_on:
       - mongodb
+    env_file:
+      - ./.env
   api-enrollment:
     build:
       context: ./api-enrollment
@@ -21,6 +23,8 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
+    env_file:
+      - ./.env
   processor:
     build:
       context: ./processor
@@ -29,12 +33,13 @@ services:
       - mongodb
       - rabbitmq
       - api-enrollment
+    env_file:
+      - ./.env
   mongodb:
     image: mongo:latest
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
+    env_file:
+      - ./.env
     ports:
       - "27017:27017"
   rabbitmq:

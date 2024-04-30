@@ -1,13 +1,14 @@
+import base64
+import json
+from pathlib import Path
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from pathlib import Path
-import json
-import base64
 
 security = HTTPBasic()
 
 def get_credentials():
-    credentials_path = Path(__file__).parent / 'credentials.json'
+    credentials_path = Path(__file__).parent / "credentials.json"
 
     with credentials_path.open("r") as file:
         credentials = json.load(file)
@@ -27,5 +28,5 @@ def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
 
 def get_basic_auth_header(username: str, password: str):
     credentials = f"{username}:{password}"
-    encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+    encoded_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
     return {"Authorization": f"Basic {encoded_credentials}"}

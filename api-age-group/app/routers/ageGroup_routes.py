@@ -1,9 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Response, status, Depends
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
-from app.config.mongodb import db_manager
 from app.config.auth.auth import verify_credentials
+from app.config.mongodb import db_manager
 from app.models.age_group import AgeGroup, AgeGroupOut
 
 router = APIRouter(prefix="/age-groups", tags=["Age Groups"])

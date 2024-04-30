@@ -1,14 +1,15 @@
 import time
 
 import pika
+from decouple import config
 
 
 class RabbitmqConsumer:
     def __init__(self, callback) -> None:
-        self.__host = "rabbitmq"
-        self.__port = 5672
-        self.__username = "guest"
-        self.__password = "guest"
+        self.__host = config("RABBIT_HOST")
+        self.__port = config("RABBIT_PORT")
+        self.__username = config("RABBIT_USER")
+        self.__password = config("RABBIT_PASSWORD")
         self.__queue = "enrollment_queue"
         self.__exchange = "enrollment_exchange"
         self.__routing_key = ""

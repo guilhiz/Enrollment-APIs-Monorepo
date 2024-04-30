@@ -1,7 +1,7 @@
-from app.config.auth.auth import get_basic_auth_header
 from fastapi.testclient import TestClient
-from app.config.mongodb import db_manager
 
+from app.config.auth.auth import get_basic_auth_header
+from app.config.mongodb import db_manager
 from app.main import app
 
 client = TestClient(app)

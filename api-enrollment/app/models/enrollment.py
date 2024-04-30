@@ -8,10 +8,10 @@ class Enrollment(BaseModel):
     cpf: str = Field(...,min_length=11, max_length=11)
     age: int = Field(..., gt=0)
 
-    @validator('cpf')
+    @validator("cpf")
     def cpf_must_be_numeric(cls, v, ):
         if not v.isdigit():
-            raise ValueError('CPF must only contain digits')
+            raise ValueError("CPF must only contain digits")
         return v
 
 class EnrollmentOut(BaseModel):

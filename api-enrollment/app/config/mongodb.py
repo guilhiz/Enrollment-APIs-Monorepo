@@ -1,17 +1,18 @@
 from typing import Dict
 
+from decouple import config
 from pymongo import MongoClient
 
-from app.schemas.enrollment import convert_enrollment, convert_enrollments
+from app.schemas.enrollment import convert_enrollment
 
 
 class DBManager:
     def __init__(self):
         self.__connection_string = "mongodb://{}:{}@{}:{}/?authSource=admin".format(
-            "root",
-            "password",
-            "mongodb",
-            "27017",
+            config("MONGO_USER"),
+            config("MONGO_PASSWORD"),
+            config("MONGO_HOST"),
+            config("MONGO_PORT"),
         )
         self.__client = MongoClient(self.__connection_string)
         self.__db = self.__client["enrollmentDB"]
