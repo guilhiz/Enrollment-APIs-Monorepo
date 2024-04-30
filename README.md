@@ -9,28 +9,22 @@ Below is a flowchart that illustrates the architecture and process flow of the s
 ```mermaid
 graph TB
     subgraph api1["Age Group API"]
-        RG["Register New Age Group
-             (request)"]
-        EG["Delete Age Group
-                (request)"]
-        VG["View Existing Age Groups
-                  (request)"]
+        RG["Register New Age Group"]
+        EG["Delete Age Group"]
+        VG["View Existing Age Groups"]
     end
 
     subgraph api2["Enrollment API"]
-        SM["Enrollment Request
-                 (request)"]
-        CM["Check Enrollment Status
-                    (request)"]
+        SM["Enrollment Request"]
+        CM["Check Enrollment Status"]
     end
 
     subgraph mq["Enrollment Queue"]
-        RQM[RabbitMQ]
+        RQM["RabbitMQ"]
     end
 
     subgraph proc["Enrollment Processor"]
         script["Python Script (stadolene script)"]
-        script -->|Reads and Processes Messages| RQM
     end
 
     subgraph db["MongoDB"]
@@ -38,18 +32,20 @@ graph TB
         ADM["Enrollment Data Storage"]
     end
 
-    RG --> AET
-    EG --> AET
-    VG --> AET
+    RG -->|Adds age group| AET
+    EG -->|Removes age group| AET
+    VG -->|Queries age groups| AET
 
-    SM -->|Validates Age with Age Group| AET
-    SM -->|Sends to Queue| RQM
-    CM --> ADM
+    script -->|Validates age with age group| AET
+    SM -->|Sends to queue| RQM
+    CM -->|Checks status| ADM
 
-    RQM -->|Routes for Processing| script
+    RQM -->|Processes requests| script
+    script -->|Records result| ADM
 
-    api1 -.-> db
-    api2 -.-> db
+    api1 -. "Database Access" .-> db
+    api2 -. "Database Access" .-> db
+    script -. "Database Access" .-> db
 
     classDef default fill:#444,stroke:#aaa,stroke-width:2px;
     classDef api fill:#667,stroke:#ccc,stroke-width:2px;
