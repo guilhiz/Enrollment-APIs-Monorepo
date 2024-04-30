@@ -75,9 +75,9 @@ docker-compose up -d
 
 ### 3. Access the APIs
 
-- Once the Docker containers are running, you can access the API endpoints at the following URLs:
-  - **Age Group API:** `http://localhost:8000/`
-  - **Enrollment API:** `http://localhost:8001/`
+- Once the Docker containers are running, you can test if the APIs are operational by accessing the following health check URLs:
+  - **Age Group API:** `http://localhost:8000/heath-check`
+  - **Enrollment API:** `http://localhost:8001/heath-check`
 
 - **Explore Interactive API Documentation:**
   - Swagger documentation for the Enrollment API is available at `http://localhost:8001/docs`.
