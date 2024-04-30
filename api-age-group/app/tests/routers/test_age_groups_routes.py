@@ -39,12 +39,12 @@ def test_delete_nonexistent_age_group():
     nonexistent_delete_response = client.delete("/age-groups/662d676dfae3b87935a62111", headers=auth_header)
     assert nonexistent_delete_response.status_code == 404
 
-def test_access_without_authentication_returns_401():
+def test_access_without_authentication():
     response_get = client.get("/age-groups")
     assert response_get.status_code == 401
 
     response_post = client.post("/age-groups", json={"min_age": 7, "max_age": 51})
     assert response_post.status_code == 401
 
-    response_delete = client.delete("/age-groups/1")  # Assumindo
+    response_delete = client.delete("/age-groups/1")
     assert response_delete.status_code == 401
