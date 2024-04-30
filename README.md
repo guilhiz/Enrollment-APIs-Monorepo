@@ -9,14 +9,19 @@ Below is a flowchart that illustrates the architecture and process flow of the s
 ```mermaid
 graph TB
     subgraph api1["Age Group API"]
-        RG["Register New Age Group"]
-        EG["Delete Age Group"]
-        VG["View Existing Age Groups"]
+        RG["Register New Age Group
+             (request)"]
+        EG["Delete Age Group
+                (request)"]
+        VG["View Existing Age Groups
+                  (request)"]
     end
 
     subgraph api2["Enrollment API"]
-        SM["Enrollment Request"]
-        CM["Check Enrollment Status"]
+        SM["Enrollment Request
+                 (request)"]
+        CM["Check Enrollment Status
+                    (request)"]
     end
 
     subgraph mq["Enrollment Queue"]
@@ -72,6 +77,7 @@ Execute the following command to start the application containers in the backgro
 ```bash
 docker-compose up -d
 ```
+ - **Environment Variables:** To facilitate testing and setup, the `.env` file has been intentionally uploaded to the repository.
 
 ### 3. Access the APIs
 
